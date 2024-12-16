@@ -1,0 +1,4 @@
+.gitignore
+.vs/
+IMDBClone/bin/
+IMDBClone/obj/

@@ -1,0 +1,6 @@
+@IMDBClone_HostAddress = http://localhost:5001
+
+GET {{IMDBClone_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
