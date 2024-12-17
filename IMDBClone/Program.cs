@@ -1,5 +1,7 @@
 
 using IMDBClone.Data;
+using IMDBClone.Models;
+using IMDBClone.Repos;
 using Microsoft.EntityFrameworkCore;
 
 namespace IMDBClone
@@ -9,15 +11,16 @@ namespace IMDBClone
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var dbOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            dbOptionsBuilder.UseSqlServer(connectionString);
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
             builder.Services.AddDbContext<ApplicationDbContext>(cfg=> cfg.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")));
+                connectionString));
 
             var app = builder.Build();
 
@@ -35,8 +38,13 @@ namespace IMDBClone
 
             app.UseAuthorization();
 
+            
 
             app.MapControllers();
+
+            new DataSeeding(new RoleRepo(
+                new ApplicationDbContext(dbOptionsBuilder.Options)
+                )).SeedAsync().Wait();
 
             app.Run();
         }

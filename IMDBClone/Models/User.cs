@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace IMDBClone.Models
 {
@@ -11,7 +12,12 @@ namespace IMDBClone.Models
         [MinLength(2)]
         [MaxLength(50)]
         public string Name { get; set; }
-        
+
+        [Required]
+        [MaxLength(50)]
+        [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")]
+        public string Password { get; set; }
+
         [Required]
         [MinLength(2)]
         [MaxLength(50)]
