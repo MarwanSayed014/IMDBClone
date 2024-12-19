@@ -11,6 +11,6 @@ namespace IMDBClone.Models
         [MinLength(2)]
         [MaxLength(50)]
         public string Name { get; set; }
-        public virtual List<User> Users { get; set; } 
+        //public virtual List<User> Users { get; set; } 
     }
 }

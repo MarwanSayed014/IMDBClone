@@ -1,8 +1,15 @@
 
 using IMDBClone.Data;
+using IMDBClone.Helpers;
 using IMDBClone.Models;
 using IMDBClone.Repos;
+using IMDBClone.Services;
+using IMDBClone.Services.Interfaces;
+using IMDBClone.Types;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace IMDBClone
 {
@@ -21,6 +28,35 @@ namespace IMDBClone
             builder.Services.AddOpenApi();
             builder.Services.AddDbContext<ApplicationDbContext>(cfg=> cfg.UseSqlServer(
                 connectionString));
+
+            //JWT
+            var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+            builder.Services.AddSingleton(jwtOptions);
+            builder.Services.AddAuthentication()
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtOptions.Issuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwtOptions.Audience,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey))
+                    };
+                });
+
+            //Auth
+            builder.Services.AddScoped<IAuthentication, Authentication>(x => new Authentication(
+                    new UserManager(new UserRepo(new ApplicationDbContext(dbOptionsBuilder.Options))),
+                    new RoleManager(new UserRolesRepo(new ApplicationDbContext(dbOptionsBuilder.Options))
+                        , new RoleRepo(new ApplicationDbContext(dbOptionsBuilder.Options))),
+                    new PasswordManager(),
+                    new JWTHelper(jwtOptions)
+                )
+            );
+
 
             var app = builder.Build();
 

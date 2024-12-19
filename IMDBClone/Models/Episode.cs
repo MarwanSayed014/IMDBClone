@@ -28,10 +28,10 @@ namespace IMDBClone.Models
         [MaxLength(50)]
         public string CoverImgUrl { get; set; }
 
-        public Guid EpisodePrequelId { get; set; }
+        public Guid? EpisodePrequelId { get; set; }
 
         [ForeignKey("EpisodePrequelId")]
-        public virtual Episode PrequelEpisode { get; set; }
+        public virtual Episode? PrequelEpisode { get; set; }
 
         public Guid SeriesId { get; set; }
 

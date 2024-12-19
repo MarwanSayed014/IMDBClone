@@ -50,12 +50,12 @@ namespace IMDBClone.Models
         [ForeignKey("ActorId")]
         public virtual Actor Actor { get; set; }
 
-        public Guid SeriesPrequelId { get; set; }
+        public Guid? SeriesPrequelId { get; set; }
 
         [ForeignKey("SeriesPrequelId")]
-        public virtual Series PrequelSeries { get; set; }
-        public virtual List<Genre> Genres { get; set; }
-        public virtual List<SeriesRatings> SeriesRatings { get; set; }
-        public virtual List<Episode> Episodes { get; set; }
+        public virtual Series? PrequelSeries { get; set; }
+        //public virtual List<Genre> Genres { get; set; }
+        //public virtual List<SeriesRatings> SeriesRatings { get; set; }
+        //public virtual List<Episode> Episodes { get; set; }
     }
 }

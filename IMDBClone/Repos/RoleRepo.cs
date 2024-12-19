@@ -16,5 +16,11 @@ namespace IMDBClone.Repos
                 return false;
             return (await FindAsync(x => x.Name == roleName)).ToList().Count() > 0 ? true : false;
         }
+        public async Task<Role> GetRoleAsync(string roleName)
+        {
+            if (roleName == null)
+                throw new NullReferenceException("RoleName should not be null");
+            return (await FindAsync(x => x.Name == roleName)).FirstOrDefault();
+        }
     }
 }

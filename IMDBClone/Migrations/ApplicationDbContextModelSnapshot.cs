@@ -22,36 +22,6 @@ namespace IMDBClone.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GenreMovie", b =>
-                {
-                    b.Property<Guid>("GenresId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MoviesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GenresId", "MoviesId");
-
-                    b.HasIndex("MoviesId");
-
-                    b.ToTable("GenreMovie");
-                });
-
-            modelBuilder.Entity("GenreSeries", b =>
-                {
-                    b.Property<Guid>("GenresId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SeriesesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GenresId", "SeriesesId");
-
-                    b.HasIndex("SeriesesId");
-
-                    b.ToTable("GenreSeries");
-                });
-
             modelBuilder.Entity("IMDBClone.Models.Actor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -139,7 +109,7 @@ namespace IMDBClone.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<Guid>("EpisodePrequelId")
+                    b.Property<Guid?>("EpisodePrequelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -210,7 +180,7 @@ namespace IMDBClone.Migrations
                     b.Property<Guid>("DirectorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("MoviePrequelId")
+                    b.Property<Guid?>("MoviePrequelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -361,7 +331,7 @@ namespace IMDBClone.Migrations
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SeriesPrequelId")
+                    b.Property<Guid?>("SeriesPrequelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("TotalRating")
@@ -465,21 +435,6 @@ namespace IMDBClone.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.Property<Guid>("RolesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("RolesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("RoleUser");
-                });
-
             modelBuilder.Entity("IMDBClone.Models.Admin", b =>
                 {
                     b.HasBaseType("IMDBClone.Models.User");
@@ -487,40 +442,10 @@ namespace IMDBClone.Migrations
                     b.HasDiscriminator().HasValue("Admin");
                 });
 
-            modelBuilder.Entity("GenreMovie", b =>
-                {
-                    b.HasOne("IMDBClone.Models.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IMDBClone.Models.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GenreSeries", b =>
-                {
-                    b.HasOne("IMDBClone.Models.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IMDBClone.Models.Series", null)
-                        .WithMany()
-                        .HasForeignKey("SeriesesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("IMDBClone.Models.Actor", b =>
                 {
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("ActorsCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -531,7 +456,7 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.Director", b =>
                 {
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("DirectorsCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -542,19 +467,17 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.Episode", b =>
                 {
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("EpisodesCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Episode", "PrequelEpisode")
                         .WithMany()
-                        .HasForeignKey("EpisodePrequelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EpisodePrequelId");
 
                     b.HasOne("IMDBClone.Models.Series", "Series")
-                        .WithMany("Episodes")
+                        .WithMany()
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -569,7 +492,7 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.Genre", b =>
                 {
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("GenresCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -580,31 +503,29 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.Movie", b =>
                 {
                     b.HasOne("IMDBClone.Models.Actor", "Actor")
-                        .WithMany("Movies")
+                        .WithMany()
                         .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("MoviesCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Director", "Director")
-                        .WithMany("Movies")
+                        .WithMany()
                         .HasForeignKey("DirectorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Movie", "PrequelMovie")
                         .WithMany()
-                        .HasForeignKey("MoviePrequelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MoviePrequelId");
 
                     b.HasOne("IMDBClone.Models.Producer", "Producer")
-                        .WithMany("Movies")
+                        .WithMany()
                         .HasForeignKey("ProducerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -642,13 +563,13 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.MovieRatings", b =>
                 {
                     b.HasOne("IMDBClone.Models.Movie", "Movie")
-                        .WithMany("MovieRatings")
+                        .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.User", "User")
-                        .WithMany("MovieRatings")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -661,7 +582,7 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.Producer", b =>
                 {
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("ProducersCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -672,34 +593,32 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.Series", b =>
                 {
                     b.HasOne("IMDBClone.Models.Actor", "Actor")
-                        .WithMany("Serieses")
+                        .WithMany()
                         .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
-                        .WithMany("SeriesesCreated")
+                        .WithMany()
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Director", "Director")
-                        .WithMany("Serieses")
+                        .WithMany()
                         .HasForeignKey("DirectorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Producer", "Producer")
-                        .WithMany("Serieses")
+                        .WithMany()
                         .HasForeignKey("ProducerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.Series", "PrequelSeries")
                         .WithMany()
-                        .HasForeignKey("SeriesPrequelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SeriesPrequelId");
 
                     b.Navigation("Actor");
 
@@ -734,13 +653,13 @@ namespace IMDBClone.Migrations
             modelBuilder.Entity("IMDBClone.Models.SeriesRatings", b =>
                 {
                     b.HasOne("IMDBClone.Models.Series", "Series")
-                        .WithMany("SeriesRatings")
+                        .WithMany()
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMDBClone.Models.User", "User")
-                        .WithMany("SeriesRatings")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -767,78 +686,6 @@ namespace IMDBClone.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.HasOne("IMDBClone.Models.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IMDBClone.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.Actor", b =>
-                {
-                    b.Navigation("Movies");
-
-                    b.Navigation("Serieses");
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.Director", b =>
-                {
-                    b.Navigation("Movies");
-
-                    b.Navigation("Serieses");
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.Movie", b =>
-                {
-                    b.Navigation("MovieRatings");
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.Producer", b =>
-                {
-                    b.Navigation("Movies");
-
-                    b.Navigation("Serieses");
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.Series", b =>
-                {
-                    b.Navigation("Episodes");
-
-                    b.Navigation("SeriesRatings");
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.User", b =>
-                {
-                    b.Navigation("MovieRatings");
-
-                    b.Navigation("SeriesRatings");
-                });
-
-            modelBuilder.Entity("IMDBClone.Models.Admin", b =>
-                {
-                    b.Navigation("ActorsCreated");
-
-                    b.Navigation("DirectorsCreated");
-
-                    b.Navigation("EpisodesCreated");
-
-                    b.Navigation("GenresCreated");
-
-                    b.Navigation("MoviesCreated");
-
-                    b.Navigation("ProducersCreated");
-
-                    b.Navigation("SeriesesCreated");
                 });
 #pragma warning restore 612, 618
         }

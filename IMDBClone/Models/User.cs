@@ -23,9 +23,9 @@ namespace IMDBClone.Models
         [MaxLength(50)]
         public string ProfileImgUrl { get; set; } 
 
-        public virtual List<Role> Roles { get; set; }
-        public virtual List<SeriesRatings> SeriesRatings { get; set; }
-        public virtual List<MovieRatings> MovieRatings { get; set; }
+        //public virtual List<Role> Roles { get; set; }
+        //public virtual List<SeriesRatings> SeriesRatings { get; set; }
+        //public virtual List<MovieRatings> MovieRatings { get; set; }
 
     }
 }

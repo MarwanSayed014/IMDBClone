@@ -30,7 +30,7 @@ namespace IMDBClone.Models
 
         [ForeignKey("AdminId")]
         public virtual Admin Admin { get; set; }
-        public virtual List<Movie> Movies { get; set; }
-        public virtual List<Series> Serieses { get; set; }
+        //public virtual List<Movie> Movies { get; set; }
+        //public virtual List<Series> Serieses { get; set; }
     }
 }

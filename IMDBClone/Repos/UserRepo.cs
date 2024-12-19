@@ -10,5 +10,11 @@ namespace IMDBClone.Repos
         public UserRepo(ApplicationDbContext context) : base(context)
         {
         }
+        public async Task<bool> UserNameExistsAsync(string userName)
+        {
+            if (userName == null)
+                throw new NullReferenceException("UserName should not be null");
+            return (await FindAsync(x => x.Name == userName)).ToList().Count() > 0 ? true : false;
+        }
     }
 }

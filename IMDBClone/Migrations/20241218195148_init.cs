@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IMDBClone.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,7 +29,9 @@ namespace IMDBClone.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ProfileImgUrl = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,30 +118,6 @@ namespace IMDBClone.Migrations
                     table.ForeignKey(
                         name: "FK_Producers_Users_AdminId",
                         column: x => x.AdminId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RoleUser",
-                columns: table => new
-                {
-                    RolesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleUser", x => new { x.RolesId, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_RoleUser_Roles_RolesId",
-                        column: x => x.RolesId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RoleUser_Users_UsersId",
-                        column: x => x.UsersId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -244,7 +222,7 @@ namespace IMDBClone.Migrations
                         column: x => x.ActorId,
                         principalTable: "Actors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Serieses_Directors_DirectorId",
                         column: x => x.DirectorId,
@@ -272,30 +250,6 @@ namespace IMDBClone.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GenreMovie",
-                columns: table => new
-                {
-                    GenresId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MoviesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GenreMovie", x => new { x.GenresId, x.MoviesId });
-                    table.ForeignKey(
-                        name: "FK_GenreMovie_Genres_GenresId",
-                        column: x => x.GenresId,
-                        principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_GenreMovie_Movies_MoviesId",
-                        column: x => x.MoviesId,
-                        principalTable: "Movies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MovieGenres",
                 columns: table => new
                 {
@@ -310,13 +264,13 @@ namespace IMDBClone.Migrations
                         column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MovieGenres_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -381,30 +335,6 @@ namespace IMDBClone.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GenreSeries",
-                columns: table => new
-                {
-                    GenresId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SeriesesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GenreSeries", x => new { x.GenresId, x.SeriesesId });
-                    table.ForeignKey(
-                        name: "FK_GenreSeries_Genres_GenresId",
-                        column: x => x.GenresId,
-                        principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_GenreSeries_Serieses_SeriesesId",
-                        column: x => x.SeriesesId,
-                        principalTable: "Serieses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SeriesGenres",
                 columns: table => new
                 {
@@ -419,7 +349,7 @@ namespace IMDBClone.Migrations
                         column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SeriesGenres_Serieses_SeriesId",
                         column: x => x.SeriesId,
@@ -444,7 +374,7 @@ namespace IMDBClone.Migrations
                         column: x => x.SeriesId,
                         principalTable: "Serieses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SeriesRatings_Users_UserId",
                         column: x => x.UserId,
@@ -479,19 +409,9 @@ namespace IMDBClone.Migrations
                 column: "SeriesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GenreMovie_MoviesId",
-                table: "GenreMovie",
-                column: "MoviesId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Genres_AdminId",
                 table: "Genres",
                 column: "AdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GenreSeries_SeriesesId",
-                table: "GenreSeries",
-                column: "SeriesesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieGenres_GenreId",
@@ -532,11 +452,6 @@ namespace IMDBClone.Migrations
                 name: "IX_Producers_AdminId",
                 table: "Producers",
                 column: "AdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoleUser_UsersId",
-                table: "RoleUser",
-                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Serieses_ActorId",
@@ -586,19 +501,10 @@ namespace IMDBClone.Migrations
                 name: "Episodes");
 
             migrationBuilder.DropTable(
-                name: "GenreMovie");
-
-            migrationBuilder.DropTable(
-                name: "GenreSeries");
-
-            migrationBuilder.DropTable(
                 name: "MovieGenres");
 
             migrationBuilder.DropTable(
                 name: "MovieRatings");
-
-            migrationBuilder.DropTable(
-                name: "RoleUser");
 
             migrationBuilder.DropTable(
                 name: "SeriesGenres");
