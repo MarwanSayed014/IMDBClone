@@ -4,6 +4,7 @@ using IMDBClone.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMDBClone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250103135917_Add MovieActors and SeriesActors")]
+    partial class AddMovieActorsandSeriesActors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -333,6 +336,9 @@ namespace IMDBClone.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ActorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("AdminId")
                         .HasColumnType("uniqueidentifier");
 
@@ -363,6 +369,8 @@ namespace IMDBClone.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActorId");
 
                     b.HasIndex("AdminId");
 
@@ -655,6 +663,12 @@ namespace IMDBClone.Migrations
 
             modelBuilder.Entity("IMDBClone.Models.Series", b =>
                 {
+                    b.HasOne("IMDBClone.Models.Actor", "Actor")
+                        .WithMany()
+                        .HasForeignKey("ActorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("IMDBClone.Models.Admin", "Admin")
                         .WithMany()
                         .HasForeignKey("AdminId")
@@ -672,6 +686,8 @@ namespace IMDBClone.Migrations
                         .HasForeignKey("ProducerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Actor");
 
                     b.Navigation("Admin");
 
