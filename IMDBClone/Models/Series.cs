@@ -46,10 +46,7 @@ namespace IMDBClone.Models
 
         [ForeignKey("DirectorId")]
         public virtual Director Director { get; set; }
-        public Guid ActorId { get; set; }
-
-        [ForeignKey("ActorId")]
-        public virtual Actor Actor { get; set; }
+        
 
 
         //public virtual List<Genre> Genres { get; set; }

@@ -36,6 +36,8 @@ namespace IMDBClone.Data
             modelBuilder.Entity<MovieGenres>().HasKey(x => new { x.MovieId, x.GenreId });
             modelBuilder.Entity<SeriesRatings>().HasKey(x => new { x.SeriesId, x.UserId });
             modelBuilder.Entity<MovieRatings>().HasKey(x => new { x.MovieId, x.UserId });
+            modelBuilder.Entity<MovieActors>().HasKey(x => new { x.MovieId, x.ActorId });
+            modelBuilder.Entity<SeriesActors>().HasKey(x => new { x.SeriesId, x.ActorId });
         }
     }
 }
